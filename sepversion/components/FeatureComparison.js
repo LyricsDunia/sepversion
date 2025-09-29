@@ -9,27 +9,44 @@ function FeatureComparison() {
     React.useEffect(() => {
       const fetchProducts = async () => {
         try {
-          const response = await trickleListObjects('products', 20, true);
-          setAllProducts(response.items);
+          const mockProducts = [
+            {
+              objectId: '1',
+              objectData: {
+                name: 'iPhone 15 Pro',
+                category: 'smartphones',
+                price: '134900',
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
+                specifications: JSON.stringify({
+                  processor: 'A17 Pro',
+                  camera: '48MP',
+                  storage: '128GB'
+                })
+              }
+            },
+            {
+              objectId: '2',
+              objectData: {
+                name: 'Samsung Galaxy S24 Ultra',
+                category: 'smartphones', 
+                price: '129900',
+                rating: 4.7,
+                image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400',
+                specifications: JSON.stringify({
+                  processor: 'Snapdragon 8 Gen 3',
+                  camera: '200MP',
+                  storage: '256GB'
+                })
+              }
+            }
+          ];
           
-          // Group products by category and select 3 from the same category
-          const categories = {};
-          response.items.forEach(product => {
-            const category = product.objectData.category;
-            if (!categories[category]) categories[category] = [];
-            categories[category].push(product);
-          });
-          
-          // Find the category with most products and select 3 from it
-          const largestCategory = Object.keys(categories).reduce((a, b) => 
-            categories[a].length > categories[b].length ? a : b
-          );
-          
-          const selectedFromCategory = categories[largestCategory]?.slice(0, 3) || response.items.slice(0, 3);
-          setSelectedProducts(selectedFromCategory);
+          setAllProducts(mockProducts);
+          setSelectedProducts(mockProducts.slice(0, 3));
           
           // Fetch videos for selected products
-          await fetchComparisonVideos(selectedFromCategory);
+          await fetchComparisonVideos(mockProducts.slice(0, 3));
         } catch (error) {
           console.error('Error fetching products:', error);
         }

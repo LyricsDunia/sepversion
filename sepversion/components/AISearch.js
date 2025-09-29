@@ -68,78 +68,78 @@ function AISearch({ searchQuery, setSearchQuery, selectedCategory, setSelectedCa
 
     React.useEffect(() => {
       if (searchQuery) {
-        performAISearch();
+      performAISearch();
+    }
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    if (searchResults.length > 0) {
+      applyFilters();
+    }
+  }, [selectedCategory, priceRange]);
+
+  const applyFilters = () => {
+    const mockResults = [
+      {
+        id: 1,
+        name: "iPhone 15 Pro",
+        category: "smartphones",
+        price: 134900,
+        rating: 4.8,
+        image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300",
+        features: ["A17 Pro chip", "48MP camera", "Titanium design"],
+        affiliate_link: "#"
+      },
+      {
+        id: 2,
+        name: "MacBook Air M2",
+        category: "laptops", 
+        price: 114900,
+        rating: 4.7,
+        image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300",
+        features: ["M2 chip", "18-hour battery", "Retina display"],
+        affiliate_link: "#"
+      },
+      {
+        id: 3,
+        name: "Sony WH-1000XM5",
+        category: "headphones",
+        price: 29990,
+        rating: 4.6,
+        image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300",
+        features: ["Noise canceling", "30-hour battery", "Hi-Res audio"],
+        affiliate_link: "#"
+      },
+      {
+        id: 4,
+        name: "Samsung Galaxy Tab S9",
+        category: "tablets",
+        price: 54990,
+        rating: 4.5,
+        image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300",
+        features: ["S Pen included", "120Hz display", "Android 13"],
+        affiliate_link: "#"
+      },
+      {
+        id: 5,
+        name: "Apple Watch Series 9",
+        category: "smartwatch",
+        price: 41900,
+        rating: 4.7,
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300",
+        features: ["Health monitoring", "GPS", "Water resistant"],
+        affiliate_link: "#"
       }
-    }, [searchQuery]);
+    ];
 
-    React.useEffect(() => {
-      if (searchResults.length > 0) {
-        applyFilters();
-      }
-    }, [selectedCategory, priceRange]);
-
-    const applyFilters = () => {
-      const mockResults = [
-        {
-          id: 1,
-          name: "iPhone 15 Pro",
-          category: "smartphones",
-          price: 134900,
-          rating: 4.8,
-          image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300",
-          features: ["A17 Pro chip", "48MP camera", "Titanium design"],
-          affiliate_link: "#"
-        },
-        {
-          id: 2,
-          name: "MacBook Air M2",
-          category: "laptops", 
-          price: 114900,
-          rating: 4.7,
-          image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300",
-          features: ["M2 chip", "18-hour battery", "Retina display"],
-          affiliate_link: "#"
-        },
-        {
-          id: 3,
-          name: "Sony WH-1000XM5",
-          category: "headphones",
-          price: 29990,
-          rating: 4.6,
-          image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300",
-          features: ["Noise canceling", "30-hour battery", "Hi-Res audio"],
-          affiliate_link: "#"
-        },
-        {
-          id: 4,
-          name: "Samsung Galaxy Tab S9",
-          category: "tablets",
-          price: 54990,
-          rating: 4.5,
-          image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300",
-          features: ["S Pen included", "120Hz display", "Android 13"],
-          affiliate_link: "#"
-        },
-        {
-          id: 5,
-          name: "Apple Watch Series 9",
-          category: "smartwatch",
-          price: 41900,
-          rating: 4.7,
-          image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300",
-          features: ["Health monitoring", "GPS", "Water resistant"],
-          affiliate_link: "#"
-        }
-      ];
-
-      const filtered = mockResults.filter(product => {
-        const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
-        const priceMatch = product.price >= priceRange[0] && product.price <= priceRange[1];
-        return categoryMatch && priceMatch;
-      });
-      
-      setSearchResults(filtered);
-    };
+    const filtered = mockResults.filter(product => {
+      const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
+      const priceMatch = product.price >= priceRange[0] && product.price <= priceRange[1];
+      return categoryMatch && priceMatch;
+    });
+    
+    setSearchResults(filtered);
+  };
 
     return (
       <section id="ai-search" className="py-16 bg-gray-50" data-name="ai-search" data-file="components/AISearch.js">

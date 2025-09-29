@@ -48,49 +48,38 @@ function Chatbot({ isVoiceActive, setIsVoiceActive }) {
 
     const checkProductAvailability = async (productQuery) => {
       try {
-        // Search our database for products
-        const response = await trickleListObjects('products', 50, true);
-        const products = response.items;
+        // Mock product database
+        const mockProducts = [
+          {
+            objectId: '1',
+            objectData: {
+              name: 'iPhone 15 Pro',
+              category: 'smartphones',
+              price: '134900',
+              rating: 4.8,
+              brand: 'Apple'
+            }
+          },
+          {
+            objectId: '2',
+            objectData: {
+              name: 'Samsung Galaxy S24 Ultra',
+              category: 'smartphones',
+              price: '129900',
+              rating: 4.7,
+              brand: 'Samsung'
+            }
+          }
+        ];
         
-        // Enhanced search matching with better keyword detection
-        const matchedProducts = products.filter(product => {
+        // Enhanced search matching
+        const matchedProducts = mockProducts.filter(product => {
           const name = product.objectData.name.toLowerCase();
           const category = product.objectData.category?.toLowerCase() || '';
           const brand = product.objectData.brand?.toLowerCase() || '';
           const query = productQuery.toLowerCase();
           
-          // Clean up query for better matching
-          const cleanQuery = query.replace(/[^\w\s]/g, ' ').trim();
-          const queryWords = cleanQuery.split(/\s+/);
-          
-          // Check for exact brand + model matches
-          if (brand && queryWords.some(word => brand.includes(word))) {
-            const modelWords = name.split(' ').filter(word => 
-              !brand.toLowerCase().includes(word.toLowerCase())
-            );
-            if (queryWords.some(word => 
-              modelWords.some(model => model.toLowerCase().includes(word))
-            )) {
-              return true;
-            }
-          }
-          
-          // Check for partial name matches
-          if (queryWords.some(word => word.length > 2 && name.includes(word))) {
-            return true;
-          }
-          
-          // Check for category matches
-          if (queryWords.some(word => category.includes(word))) {
-            return true;
-          }
-          
-          // Check for brand matches
-          if (queryWords.some(word => brand.includes(word))) {
-            return true;
-          }
-          
-          return false;
+          return name.includes(query) || category.includes(query) || brand.includes(query);
         });
         
         return matchedProducts;
@@ -102,18 +91,7 @@ function Chatbot({ isVoiceActive, setIsVoiceActive }) {
 
     const sendMissingProductAlert = async (productQuery, userMessage) => {
       try {
-        // Create missing product alert entry
-        await trickleCreateObject('missing_product_alerts', {
-          query: productQuery,
-          timestamp: new Date().toISOString(),
-          userMessage: userMessage,
-          status: 'pending'
-        });
-        
-        // Send email notification in background
-        await emailNotification.sendMissingProductAlert(productQuery, userMessage);
-        
-        console.log('Missing product alert created for:', productQuery);
+        console.log('Missing product alert for:', productQuery);
       } catch (error) {
         console.error('Error creating missing product alert:', error);
       }

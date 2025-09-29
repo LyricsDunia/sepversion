@@ -3,11 +3,11 @@ const emailNotification = {
   async sendMissingProductAlert(productQuery, userMessage) {
     try {
       // In a real implementation, this would connect to an email service
-      // For now, we'll create a database entry that can be processed by a background service
+      // For demo purposes, we'll just log the alert
       
       const alertData = {
         type: 'missing_product',
-        recipient: 'appdevynp@gmail.com',
+        recipient: 'admin@gadgetfinder.com',
         subject: `Missing Product Alert - ${productQuery}`,
         body: `
           A user has requested a product that is not available on our website:
@@ -18,46 +18,31 @@ const emailNotification = {
           
           Please consider adding this product to the website inventory.
         `,
-        status: 'pending',
+        status: 'logged',
         createdAt: new Date().toISOString()
       };
       
-      // Store alert in database for background processing
-      await trickleCreateObject('email_alerts', alertData);
+      // Store in local storage for demo purposes
+      const alerts = JSON.parse(localStorage.getItem('gadgetfinder_alerts') || '[]');
+      alerts.push(alertData);
+      localStorage.setItem('gadgetfinder_alerts', JSON.stringify(alerts));
       
       // Log for development purposes
-      console.log('Email alert queued:', alertData);
+      console.log('Email alert logged:', alertData);
       
       return { success: true, alertId: Date.now() };
     } catch (error) {
-      console.error('Error sending email alert:', error);
+      console.error('Error logging email alert:', error);
       return { success: false, error: error.message };
     }
   },
 
-  async processPendingAlerts() {
+  async getStoredAlerts() {
     try {
-      // Fetch pending email alerts
-      const response = await trickleListObjects('email_alerts', 50, true);
-      const pendingAlerts = response.items.filter(
-        alert => alert.objectData.status === 'pending'
-      );
-      
-      // In a real implementation, this would send actual emails
-      for (const alert of pendingAlerts) {
-        console.log('Processing email alert:', alert.objectData.subject);
-        
-        // Mark as processed
-        await trickleUpdateObject('email_alerts', alert.objectId, {
-          ...alert.objectData,
-          status: 'sent',
-          processedAt: new Date().toISOString()
-        });
-      }
-      
-      return { success: true, processed: pendingAlerts.length };
+      const alerts = JSON.parse(localStorage.getItem('gadgetfinder_alerts') || '[]');
+      return { success: true, alerts };
     } catch (error) {
-      console.error('Error processing email alerts:', error);
+      console.error('Error retrieving alerts:', error);
       return { success: false, error: error.message };
     }
   }

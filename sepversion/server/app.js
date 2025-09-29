@@ -1,6 +1,6 @@
 // Express Server with MongoDB Integration
 const express = require('express');
-const cors = require('cors');
+
 const path = require('path');
 require('dotenv').config();
 
@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const dbConnection = new DatabaseConnection();
 
 // Middleware
-app.use(cors());
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..')));
 

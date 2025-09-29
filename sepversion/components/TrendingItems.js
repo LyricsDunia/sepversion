@@ -5,11 +5,20 @@ function TrendingItems() {
     React.useEffect(() => {
       const fetchTrending = async () => {
         try {
-          const response = await trickleListObjects('products', 10, true);
-          const trending = response.items.filter(item => 
-            item.objectData.trending === true || item.objectData.trending === 'true'
-          ).slice(0, 6);
-          setTrendingProducts(trending);
+          const response = await mongoAPI.getProducts({ trending: true });
+          if (response.success) {
+            const trending = response.data.slice(0, 5).map(product => ({
+              objectId: product._id,
+              objectData: {
+                name: product.name,
+                price: product.price.toString(),
+                rating: product.rating,
+                image: product.image,
+                trending: product.trending
+              }
+            }));
+            setTrendingProducts(trending);
+          }
         } catch (error) {
           console.error('Error fetching trending products:', error);
         }

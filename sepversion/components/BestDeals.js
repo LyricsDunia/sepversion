@@ -5,11 +5,21 @@ function BestDeals() {
     React.useEffect(() => {
       const fetchBestDeals = async () => {
         try {
-          const response = await trickleListObjects('products', 10, true);
-          const deals = response.items.filter(item => 
-            item.objectData.bestDeal === true || item.objectData.bestDeal === 'true'
-          ).slice(0, 4);
-          setBestDeals(deals);
+          const response = await mongoAPI.getProducts({ bestDeal: true });
+          if (response.success) {
+            const deals = response.data.slice(0, 5).map(product => ({
+              objectId: product._id,
+              objectData: {
+                name: product.name,
+                price: product.price.toString(),
+                originalPrice: product.originalPrice?.toString() || product.price.toString(),
+                rating: product.rating,
+                image: product.image,
+                bestDeal: product.bestDeal
+              }
+            }));
+            setBestDeals(deals);
+          }
         } catch (error) {
           console.error('Error fetching best deals:', error);
         }
