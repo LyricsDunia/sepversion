@@ -3,7 +3,7 @@ const apiClient = {
   baseURL:
     window.location.hostname === "localhost"
       ? "http://localhost:5000/api"
-      : "https://YOUR-BACKEND.onrender.com/api",
+      : "https://sepversion.onrender.com/api",
 
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
