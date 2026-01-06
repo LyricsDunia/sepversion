@@ -37,7 +37,10 @@ function Header() {
 
             <div className="md:hidden">
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen),signin()}
+                onClick={() => {
+                  setIsMenuOpen(!isMenuOpen);
+                  signin();
+                }}
                 className="text-[var(--text-secondary)] hover:text-[var(--primary-color)]"
               >
                 <div className="icon-menu text-xl"></div>
