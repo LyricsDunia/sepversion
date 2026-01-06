@@ -1,7 +1,7 @@
 // MongoDB API Utility for Browser-based Operations
 const mongoAPI = {
   // Base API endpoint - adjust for your backend
-  baseURL: '/api',
+  baseURL: 'http://localhost:5000/api',
   
   // Generic API request function
   async request(endpoint, options = {}) {
