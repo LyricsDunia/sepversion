@@ -8,7 +8,7 @@ function Header() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-gradient">GadgetFinder</h1>
+                <h1 className="text-2xl font-bold text-gradient">GadgetFinder-Vinod</h1>
               </div>
             </div>
             
@@ -37,7 +37,7 @@ function Header() {
 
             <div className="md:hidden">
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={() => setIsMenuOpen(!isMenuOpen),signin()}
                 className="text-[var(--text-secondary)] hover:text-[var(--primary-color)]"
               >
                 <div className="icon-menu text-xl"></div>
