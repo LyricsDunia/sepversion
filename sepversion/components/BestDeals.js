@@ -5,7 +5,7 @@ function BestDeals() {
     React.useEffect(() => {
       const fetchBestDeals = async () => {
         try {
-          const response = await mongoAPI.getProducts({ bestDeal: true });
+          const response = await apiClient.getProducts({ bestDeal: true });
           if (response.success) {
             const deals = response.data.slice(0, 5).map(product => ({
               objectId: product._id,

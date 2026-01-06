@@ -5,7 +5,7 @@ function TrendingItems() {
     React.useEffect(() => {
       const fetchTrending = async () => {
         try {
-          const response = await mongoAPI.getProducts({ trending: true });
+          const response = await apiClient.getProducts({ trending: true });
           if (response.success) {
             const trending = response.data.slice(0, 5).map(product => ({
               objectId: product._id,

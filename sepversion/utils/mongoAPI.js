@@ -1,4 +1,4 @@
-const mongoAPI = {
+const apiClient = {
   // Auto-switch between local and production
   baseURL:
     window.location.hostname === "localhost"
