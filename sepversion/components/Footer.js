@@ -5,7 +5,7 @@ function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold text-gradient mb-4">GadgetFinder</h3>
+              <h3 className="text-2xl font-bold text-gradient mb-4">Smarteins</h3>
               <p className="text-gray-400 mb-4">
                 AI-powered recommendations for the best electronic gadgets. 
                 Find your perfect tech companion with smart filtering and real-time price comparisons.
@@ -58,7 +58,7 @@ function Footer() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 GadgetFinder. All rights reserved. Powered by AI technology.</p>
+            <p>&copy; 2024 Smarteins. All rights reserved. Powered by AI technology.</p>
           </div>
         </div>
       </footer>

@@ -5,11 +5,15 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 // MongoDB connection
 let db;
-const mongoUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/gadget-finder';
+const mongoUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/smarteinsDB';
 
 // Middleware
 app.use(cors());
@@ -20,7 +24,7 @@ app.use(express.static('frontend'));
 MongoClient.connect(mongoUrl)
   .then(client => {
     console.log('Connected to MongoDB');
-    db = client.db('gadget-finder');
+    db = client.db('smarteinsdb');
     initializeData();
   })
   .catch(error => console.error('MongoDB connection error:', error));

@@ -25,7 +25,11 @@ const mongoAPI = {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
-      return await response.json();
+      try {
+        return await response.json();
+      } catch (parseError) {
+        throw new Error(`Failed to parse JSON response: ${parseError.message}`);
+      }
     } catch (error) {
       console.error('MongoDB API request failed:', error);
       // Fallback to mock data for development
@@ -41,6 +45,7 @@ const mongoAPI = {
   },
 
   async getProduct(productId) {
+    if (!productId) throw new Error('productId is required');
     return await this.request(`/products/${productId}`);
   },
 
@@ -60,6 +65,7 @@ const mongoAPI = {
 
   // Price History API
   async getPriceHistory(productId, days = 30) {
+    if (!productId) throw new Error('productId is required');
     return await this.request(`/price-history/${productId}?days=${days}`);
   },
 
@@ -72,6 +78,7 @@ const mongoAPI = {
 
   // Reviews API
   async getReviews(productId) {
+    if (!productId) throw new Error('productId is required');
     return await this.request(`/reviews?productId=${productId}`);
   },
 
@@ -96,7 +103,7 @@ const mongoAPI = {
 
   // Mock data fallback for development
   getMockData(endpoint, options = {}) {
-    if (endpoint.includes('/products')) {
+    if (endpoint.startsWith('/products')) {
       return {
         success: true,
         data: [
