@@ -16,7 +16,7 @@ app.use(
   }));
 app.options("*", cors());
 app.use(express.json());
-app.use(express.static("frontend"));
+app.use(express.static("public"));
 
 // MongoDB connection
 let db;
