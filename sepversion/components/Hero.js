@@ -31,7 +31,7 @@ function Hero({ searchQuery, setSearchQuery, isVoiceActive, setIsVoiceActive }) 
           </p>
 
           <div className="bg-white bg-opacity-10 rounded-xl p-6 mb-8 max-w-4xl mx-auto">
-            <h3 className="text-xl font-semibold mb-4">Why Choose GadgetFinder?</h3>
+            <h3 className="text-xl font-semibold mb-4">Why Choose Smarteins?</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-start">
                 <div className="icon-zap text-yellow-400 mr-2 mt-1"></div>
