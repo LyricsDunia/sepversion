@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: "https://www.smarteins.com",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"]
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With"]
   }));
 app.options("*", cors());
 app.use(express.json());
@@ -60,7 +60,7 @@ async function initializeData() {
           rating: 4.8,
           image:
             "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400",
-          trending: true,
+          trending: false,
           bestDeal: false,
           brand: "Apple",
           specifications: {
@@ -79,8 +79,8 @@ async function initializeData() {
           rating: 4.7,
           image:
             "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400",
-          trending: true,
-          bestDeal: true,
+          trending: false,
+          bestDeal: false,
           brand: "Samsung",
           specifications: {
             processor: "Snapdragon 8 Gen 3",
