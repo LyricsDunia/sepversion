@@ -8,7 +8,7 @@ function Header() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex items-center gap-3 flex-shrink-0">
-                <img src="/public/smarteins.png" alt="Smarteins Logo" className="h-7 w-7 object-contain" />
+                <img src="../public/smarteins.png" alt="Smarteins Logo" className="h-7 w-7 object-contain" />
                 <h1 className="text-2xl font-bold text-gradient">Smarteins</h1>
               </div>
             </div>

@@ -1,91 +1,126 @@
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
+// Express Server with MongoDB Integration
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
+
+const { DatabaseConnection, mongoConfig } = require('../config/database');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Initialize database connection
+const dbConnection = new DatabaseConnection();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '..')));
+
+// Connect to MongoDB on startup
+dbConnection.connect().then(connected => {
+  if (connected) {
+    console.log('Server ready with MongoDB connection');
+
+  } else {
+    console.log('Server started without database connection');
   }
+});
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo.componentStack);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
-            <p className="text-gray-600 mb-4">We're sorry, but something unexpected happened.</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn btn-black"
-            >
-              Reload Page
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-function App() {
+// Products API Routes
+app.get('/api/products', async (req, res) => {
   try {
-    const [searchQuery, setSearchQuery] = React.useState('');
-    const [selectedCategory, setSelectedCategory] = React.useState('all');
-    const [priceRange, setPriceRange] = React.useState([0, 200000]);
-    const [isVoiceActive, setIsVoiceActive] = React.useState(false);
-
-    return (
-      <div className="min-h-screen" data-name="app" data-file="app.js">
-        <Header />
-        <Hero 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          isVoiceActive={isVoiceActive}
-          setIsVoiceActive={setIsVoiceActive}
-        />
-        <TrendingItems />
-        <BestDeals />
-        <AISearch 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          priceRange={priceRange}
-          setPriceRange={setPriceRange}
-        />
-        <FeatureComparison />
-        <FeaturedGadgets 
-          category={selectedCategory}
-          priceRange={priceRange}
-        />
-        <Categories 
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-        <PriceComparison />
-        <Chatbot 
-          isVoiceActive={isVoiceActive}
-          setIsVoiceActive={setIsVoiceActive}
-        />
-        <Footer />
-      </div>
-    );
+    const collection = dbConnection.getCollection(mongoConfig.collections.products);
+    const { category, minPrice, maxPrice, search } = req.query;
+    
+    let filter = {};
+    if (category && category !== 'all') filter.category = category;
+    if (minPrice) filter.price = { ...filter.price, $gte: parseInt(minPrice) };
+    if (maxPrice) filter.price = { ...filter.price, $lte: parseInt(maxPrice) };
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { brand: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const products = await collection.find(filter).toArray();
+    res.json({ success: true, data: products });
   } catch (error) {
-    console.error('App component error:', error);
-    return null;
+    console.error('Products fetch error:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
-}
+});
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const collection = dbConnection.getCollection(mongoConfig.collections.products);
+    const product = await collection.findOne({ _id: req.params.id });
+    
+    if (!product) {
+      return res.status(404).json({ success: false, error: 'Product not found' });
+    }
+    
+    res.json({ success: true, data: product });
+  } catch (error) {
+    console.error('Product fetch error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/products', async (req, res) => {
+  try {
+    const collection = dbConnection.getCollection(mongoConfig.collections.products);
+    const productData = {
+      ...req.body,
+      _id: new Date().getTime().toString(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    await collection.insertOne(productData);
+    res.json({ success: true, data: productData });
+  } catch (error) {
+    console.error('Product creation error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Price History API Routes
+app.get('/api/price-history/:productId', async (req, res) => {
+  try {
+    const collection = dbConnection.getCollection(mongoConfig.collections.priceHistory);
+    const days = parseInt(req.query.days) || 30;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    
+    const history = await collection.find({
+      productId: req.params.productId,
+      date: { $gte: startDate }
+    }).sort({ date: 1 }).toArray();
+    
+    res.json({ success: true, data: history });
+  } catch (error) {
+    console.error('Price history fetch error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Serve the main HTML file
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('Shutting down server...');
+  await dbConnection.disconnect();
+  process.exit(0);
+});
+
+module.exports = app;

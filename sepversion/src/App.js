@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, '..')));
 dbConnection.connect().then(connected => {
   if (connected) {
     console.log('Server ready with MongoDB connection');
+
   } else {
     console.log('Server started without database connection');
   }
@@ -107,7 +108,7 @@ app.get('/api/price-history/:productId', async (req, res) => {
 
 // Serve the main HTML file
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname,  'public', 'index.html'));
+  res.sendFile(path.join(__dirname, "..", 'public', 'index.html'));
 });
 
 // Start server
